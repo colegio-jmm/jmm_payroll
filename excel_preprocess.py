@@ -46,3 +46,5 @@ columns_to_keep = [
 
 
 df = df[columns_to_keep]
+long_df = pd.melt(df, id_vars=['Nombre'], var_name='Cuenta', value_name='Valor')
+filtered_df = long_df[(long_df['Cuenta'].isin(['Mensual', 'Descuentos', 'Pagar'])) | (long_df['Valor'] != 0)]

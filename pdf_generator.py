@@ -1,7 +1,7 @@
 from fpdf import FPDF
 import pandas as pd
 
-def generate_payroll_summary(employee_name, salary, incentives, discounts, output_path):
+def generate_payroll_summary(df):
     # Create instance of FPDF class
     pdf = FPDF()
     pdf.set_auto_page_break(auto=True, margin=15)
