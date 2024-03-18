@@ -10,7 +10,8 @@ import pandas as pd
 
 cuentas_ingreso = ['Extras']
 
-cuentas_descuentos = [    
+cuentas_descuentos = [
+    'ISR',
     'AFP',
     'SFS',
     'COOP',
@@ -47,6 +48,7 @@ def excel_preprocess(file):
         'Mensual',
         'Extras',
         'Ingresos',
+        'ISR',
         'AFP',
         'SFS',
         'COOP',
