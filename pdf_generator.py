@@ -1,7 +1,16 @@
 from fpdf import FPDF
 import pandas as pd
 
-def generate_payroll_summary(df):
+def generate_payroll_summary(df, cuentas_ingreso, cuentas_descuentos):
+    
+    employee_name = df['Nombre'].iloc[0]
+    output_path = f'volante_{employee_name}.pdf'
+    sueldo_bruto = df[df['Cuenta'] == 'Mensual']['Valor'].iloc[0]
+    total_ingresos = sueldo_bruto = df[df['Cuenta'] == 'Ingresos']['Valor'].iloc[0]
+    df_ingresos = df[df['Cuenta'].isin(cuentas_ingreso)]
+    df_deducciones = df[df['Cuenta'].isin(cuentas_descuentos)]
+    total_deducciones = df[df['Cuenta'] == 'Descuentos']['Valor'].iloc[0]
+    total_pago = df[df['Cuenta'] == 'Pagar']['Valor'].iloc[0]
     # Create instance of FPDF class
     pdf = FPDF()
     pdf.set_auto_page_break(auto=True, margin=15)
@@ -14,35 +23,32 @@ def generate_payroll_summary(df):
 
     # Title
     pdf.set_font("Arial", style="B", size=16)
-    pdf.cell(200, 10, txt="Payroll Summary", ln=True, align="C")
+    pdf.cell(200, 10, txt="Volante de Pago", ln=True, align="C")
     pdf.ln(10)
 
     # Employee details
     pdf.set_font("Arial", style="", size=12)
     pdf.cell(0, 10, f"Employee Name: {employee_name}", ln=True)
-    pdf.cell(0, 10, f"Salary: ${salary}", ln=True)
-    pdf.cell(0, 10, f"Incentives: ${incentives}", ln=True)
-    pdf.cell(0, 10, f"Discounts: ${discounts}", ln=True)
+    pdf.cell(0, 10, "Ingresos:", ln=True)
+    pdf.cell(0, 10, f"Sueldo Bruto: ${sueldo_bruto}", ln=True)
+    for index, row in df_ingresos.iterrows():
+        pdf.cell(0, 10, f"{row['Cuenta']}: ${row['Valor']}", ln=True)
+    pdf.cell(0, 10, f"Total de Ingresos: ${total_ingresos}", ln=True)    
+    pdf.cell(0, 10, "Deducciones:", ln=True)
+    for index, row in df_deducciones.iterrows():
+        pdf.cell(0, 10, f"{row['Cuenta']}: ${row['Valor']}", ln=True)
+    pdf.cell(0, 10, f"Total de Deducciones: ${total_deducciones}", ln=True)  
     pdf.ln(10)
 
     # Total payment
-    total_payment = salary + incentives - discounts
     pdf.set_font("Arial", style="B", size=14)
-    pdf.cell(0, 10, f"Total Payment: ${total_payment}", ln=True)
+    pdf.cell(0, 10, f"Pago total: ${total_pago}", ln=True)
     pdf.ln(10)
 
     # Footer
     pdf.set_font("Arial", style="", size=10)
-    pdf.cell(0, 10, "Thank you for your hard work!", ln=True, align="C")
+    pdf.cell(0, 10, "Colegio Jaime Molina Mota", ln=True, align="C")
 
     # Save the PDF to the specified output path
     pdf.output(output_path)
 
-# Example usage:
-employee_name = "John Doe"
-salary = 3000
-incentives = 500
-discounts = 200
-output_path = "payroll_summary.pdf"
-generate_payroll_summary(employee_name, salary, incentives, discounts, output_path)
-print("Payroll summary generated:", output_path)

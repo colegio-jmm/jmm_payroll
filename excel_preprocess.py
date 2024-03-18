@@ -7,29 +7,10 @@ Created on Fri Mar 15 16:54:01 2024
 
 import pandas as pd
 
-df = pd.read_excel('Nomina feb 2024.xls', sheet_name='Nómina fija')
-row_number = df.index[df.iloc[:, 0] == 'Carnet'].tolist()[0]
-df = df.iloc[row_number:]
-df.columns = df.iloc[0]
-df.columns = df.columns.str.strip()
-df = df.drop(df.index[:2])
-df.reset_index(drop=True, inplace=True)
-df['Mensual'] = df['Mensual'].fillna(0)
-mensual_index = df.columns.get_loc("Mensual")
-df.iloc[:, mensual_index + 1] = df.iloc[:, mensual_index + 1].fillna(0)
 
-df = df[pd.to_numeric(df['Mensual'], errors='coerce').notnull()]
-df = df[pd.to_numeric(df.iloc[:, mensual_index + 1], errors='coerce').notnull()]
-df['Mensual'] = df['Mensual'].fillna(0) + df.iloc[:, mensual_index + 1].fillna(0)
-df = df[df['Nombre'].notnull()]
-df = df[df['Carnet'] != 'Nivel:']
+cuentas_ingreso = ['Extras']
 
-columns_to_keep = [
-    'Carnet',
-    'Nombre',
-    'Mensual',
-    'Extras',
-    'Ingresos',
+cuentas_descuentos = [    
     'AFP',
     'SFS',
     'COOP',
@@ -39,12 +20,48 @@ columns_to_keep = [
     'Escolares',
     'Dieta',
     'Uniforme',
-    'Retenciones',
-    'Descuentos',
-    'Pagar'
+    'Retenciones'
     ]
+    
 
-
-df = df[columns_to_keep]
-long_df = pd.melt(df, id_vars=['Nombre'], var_name='Cuenta', value_name='Valor')
-filtered_df = long_df[(long_df['Cuenta'].isin(['Mensual', 'Descuentos', 'Pagar'])) | (long_df['Valor'] != 0)]
+def excel_preprocess(source):
+    df = pd.read_excel(source, sheet_name='Nómina fija')
+    row_number = df.index[df.iloc[:, 0] == 'Carnet'].tolist()[0]
+    df = df.iloc[row_number:]
+    df.columns = df.iloc[0]
+    df.columns = df.columns.str.strip()
+    df = df.drop(df.index[:2])
+    df.reset_index(drop=True, inplace=True)
+    df['Mensual'] = df['Mensual'].fillna(0)
+    mensual_index = df.columns.get_loc("Mensual")
+    df.iloc[:, mensual_index + 1] = df.iloc[:, mensual_index + 1].fillna(0)
+    
+    df = df[pd.to_numeric(df['Mensual'], errors='coerce').notnull()]
+    df = df[pd.to_numeric(df.iloc[:, mensual_index + 1], errors='coerce').notnull()]
+    df['Mensual'] = df['Mensual'].fillna(0) + df.iloc[:, mensual_index + 1].fillna(0)
+    df = df[df['Nombre'].notnull()]
+    df = df[df['Carnet'] != 'Nivel:']
+    
+    columns_to_keep = [
+        'Nombre',
+        'Mensual',
+        'Extras',
+        'Ingresos',
+        'AFP',
+        'SFS',
+        'COOP',
+        'Prestamos',
+        'Coleg',
+        'Comunic',
+        'Escolares',
+        'Dieta',
+        'Uniforme',
+        'Retenciones',
+        'Descuentos',
+        'Pagar'
+        ]
+    
+    
+    df = df[columns_to_keep]
+    long_df = pd.melt(df, id_vars=['Nombre'], var_name='Cuenta', value_name='Valor')
+    return long_df[(long_df['Cuenta'].isin(['Mensual', 'Descuentos', 'Pagar'])) | (long_df['Valor'] != 0)]

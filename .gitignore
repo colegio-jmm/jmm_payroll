@@ -1,2 +1,6 @@
 
 *.ini
+*.pdf
+*.bak
+*.pyc
+*.xls
