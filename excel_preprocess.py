@@ -24,8 +24,8 @@ cuentas_descuentos = [
     ]
     
 
-def excel_preprocess(source):
-    df = pd.read_excel(source, sheet_name='Nómina fija')
+def excel_preprocess(file):
+    df = pd.read_excel(file, sheet_name='Nómina fija')
     row_number = df.index[df.iloc[:, 0] == 'Carnet'].tolist()[0]
     df = df.iloc[row_number:]
     df.columns = df.iloc[0]
@@ -64,4 +64,5 @@ def excel_preprocess(source):
     
     df = df[columns_to_keep]
     long_df = pd.melt(df, id_vars=['Nombre'], var_name='Cuenta', value_name='Valor')
+    long_df = long_df.dropna()
     return long_df[(long_df['Cuenta'].isin(['Mensual', 'Descuentos', 'Pagar'])) | (long_df['Valor'] != 0)]
