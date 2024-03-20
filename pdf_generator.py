@@ -47,7 +47,16 @@ def generate_payroll_summary(df, cuentas_ingreso, cuentas_descuentos, zip_archiv
     pdf.set_font("Arial", style="B", size=14)
     pdf.cell(0, 10, f"Pago total: RD${'{:,.1f}'.format(total_pago)}", ln=True)
     pdf.ln(10)
-
+    
+    # Comentario
+    
+    if 'Comentario' in list(df.Cuenta):
+        pdf.set_font("Arial", style="B", size=12)
+        pdf.cell(0, 10, "Comentario", ln=True)
+        pdf.set_font("Arial", size=10)
+        pdf.cell(0, 10, df[df['Cuenta'] == 'Comentario']['Valor'].iloc[0], ln=True)
+        pdf.ln(10)
+        
     # Footer
     pdf.set_font("Arial", style="", size=10)
     pdf.cell(0, 10, "Colegio Jaime Molina Mota", ln=True, align="C")

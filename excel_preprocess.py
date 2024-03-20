@@ -8,7 +8,7 @@ Created on Fri Mar 15 16:54:01 2024
 import pandas as pd
 
 
-cuentas_ingreso = ['Extras']
+cuentas_ingreso = ['Extras', 'Incentivos']
 
 cuentas_descuentos = [
     'ISR',
@@ -47,6 +47,7 @@ def excel_preprocess(file):
         'Nombre',
         'Mensual',
         'Extras',
+        'Incentivos',
         'Ingresos',
         'ISR',
         'AFP',
@@ -60,7 +61,8 @@ def excel_preprocess(file):
         'Uniforme',
         'Retenciones',
         'Descuentos',
-        'Pagar'
+        'Pagar',
+        'Comentario'
         ]
     
     
