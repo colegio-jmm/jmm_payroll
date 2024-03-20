@@ -18,7 +18,7 @@ def generate_payroll_summary(df, cuentas_ingreso, cuentas_descuentos, zip_archiv
 
     # Set font for the entire document
     pdf.set_font("Arial", size=12)
-    pdf.image("logo.png", x=10, y=10, w=30)
+    pdf.image("logo.jpeg", x=10, y=10, w=30)
 
     # Title
     pdf.set_font("Arial", style="B", size=16)
